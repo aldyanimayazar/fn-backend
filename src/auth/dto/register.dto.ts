@@ -9,10 +9,8 @@ export class RegisterDto {
   @IsString() firstName: string;
   @IsString() lastName: string;
   @IsString() address: string;
-  @IsString() rolesId: string;
-
-  @IsEnum(UserType)
-  userType: UserType;
+  
+  rolesId: string;
 
   @IsEnum(VerifiedStatus)
   verifiedStatus: VerifiedStatus;

@@ -3,11 +3,12 @@ import { AbstractDocument } from "src/database/abstract.schema";
 import { ActivationStatus, VerifiedStatus } from "../enum/activation-status.enum";
 import { IRoles } from "src/roles/interface/roles.interface";
 import { RoleSchema } from "src/roles/model/role.schema";
+import { v4 as uuidv4 } from 'uuid';
 
 @Schema({ timestamps: true, collection: 'users' })
 export class UserDocuments extends AbstractDocument {
 
-    @Prop()
+    @Prop({ type: String, default: uuidv4 })
     userId: string;
 
     @Prop()

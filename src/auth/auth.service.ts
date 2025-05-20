@@ -3,12 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { nanoid } from 'nanoid'
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    protected rolesService: RolesService,
   ) {}
 
   async validateUser(email: string, pass: string) {
@@ -58,14 +61,14 @@ export class AuthService {
   async register(dto: RegisterDto) {
     const existing = await this.usersService.findByEmail(dto.email);
     if (existing) throw new Error('Email already in use');
-
+    const findRoles = await this.rolesService.findbyId(dto.rolesId);
     const hashed = await bcrypt.hash(dto.password, 10);
     const user = await this.usersService.create({
       ...dto,
       password: hashed,
       roles: {
-        rolesId: dto.rolesId,
-        userType: dto.userType,
+        rolesId:  findRoles.rolesId,
+        userType:  findRoles.userType,
       },
     });
 
