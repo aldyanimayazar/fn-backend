@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
-import { nanoid } from 'nanoid'
 import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
@@ -59,20 +58,25 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto) {
-    const existing = await this.usersService.findByEmail(dto.email);
-    if (existing) throw new Error('Email already in use');
-    const findRoles = await this.rolesService.findbyId(dto.rolesId);
-    const hashed = await bcrypt.hash(dto.password, 10);
-    const user = await this.usersService.create({
-      ...dto,
-      password: hashed,
-      roles: {
-        rolesId:  findRoles.rolesId,
-        userType:  findRoles.userType,
-      },
-    });
-
-    const { password, ...result } = user;
-    return result;
+    try {
+      const existing = await this.usersService.findByEmail(dto.email);
+      if (existing) throw new Error('Email already in use');
+      const findRoles = await this.rolesService.findbyId(dto.rolesId);
+      if(findRoles) throw new Error('cannot find rolesId');
+      const hashed = await bcrypt.hash(dto.password, 10);
+      const user = await this.usersService.create({
+        ...dto,
+        password: hashed,
+        roles: {
+          rolesId:  findRoles.rolesId,
+          userType:  findRoles.userType,
+        },
+      });
+  
+      const { password, ...result } = user;
+      return result;
+    } catch (error) {
+      throw new Error('cannot register this user please contact administrator')
+    }
   }
 }
