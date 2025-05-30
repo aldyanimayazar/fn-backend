@@ -7,6 +7,9 @@ import * as Joi from 'joi';
 import { DatabaseModule } from './database/database.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
+import { MediaModule } from './media/media.module';
+import { RaceEventModule } from './race-event/race-event.module';
+import { RaceRegistrationModule } from './race-registration/race-registration.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { CategoryModule } from './category/category.module';
     DatabaseModule,
     ProductModule,
     CategoryModule,
+    MediaModule,
+    RaceEventModule,
+    RaceRegistrationModule,
   ],
   controllers: [],
   providers: [],
