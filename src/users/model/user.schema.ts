@@ -4,6 +4,7 @@ import { ActivationStatus, VerifiedStatus } from "../enum/activation-status.enum
 import { IRoles } from "src/roles/interface/roles.interface";
 import { RoleSchema } from "src/roles/model/role.schema";
 import { v4 as uuidv4 } from 'uuid';
+import * as mongoose from 'mongoose';
 
 @Schema({ timestamps: true, collection: 'users' })
 export class UserDocuments extends AbstractDocument {
@@ -37,6 +38,9 @@ export class UserDocuments extends AbstractDocument {
 
     @Prop()
     verifiedStatus: VerifiedStatus;
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Branch', required: false })
+    branch?: mongoose.Types.ObjectId;
 
 }
 

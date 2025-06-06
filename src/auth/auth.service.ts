@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { RolesService } from 'src/roles/roles.service';
+import { RolesDocuments } from 'src/roles/model/role.schema';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     protected rolesService: RolesService,
-  ) {}
+  ) { }
 
   async validateUser(email: string, pass: string) {
     const user = await this.usersService.findByEmail(email);
@@ -59,24 +60,46 @@ export class AuthService {
 
   async register(dto: RegisterDto) {
     try {
+      // Fetch the role document
+      const role = await this.rolesService.findbyId(dto.rolesId) as RolesDocuments;
+
+      if (!role) {
+        throw new Error('Cannot find rolesId');
+      }
+
+      // Enforce branch requirement for branch-specific roles
+      if (
+        (role.userType === 'BRANCH_ADMIN' || role.userType === 'SHOP_KEEPER') &&
+        !dto.branch
+      ) {
+        throw new BadRequestException('Branch is required for this role');
+      }
+
+      // Check for existing email
       const existing = await this.usersService.findByEmail(dto.email);
-      if (existing) throw new Error('Email already in use');
-      const findRoles = await this.rolesService.findbyId(dto.rolesId);
-      if(findRoles) throw new Error('cannot find rolesId');
+      if (existing) {
+        throw new Error('Email already in use');
+      }
+
+      // Hash password
       const hashed = await bcrypt.hash(dto.password, 10);
+
+      // Create user
       const user = await this.usersService.create({
         ...dto,
         password: hashed,
         roles: {
-          rolesId:  findRoles.rolesId,
-          userType:  findRoles.userType,
+          rolesId: role.rolesId,
+          userType: role.userType,
         },
       });
-  
-      const { password, ...result } = user;
+
+      const { password, ...result } = user.toObject();
       return result;
     } catch (error) {
-      throw new Error('cannot register this user please contact administrator')
+      console.error('Register Error:', error); // optional for logging
+      throw new BadRequestException(error.message || 'Registration failed');
     }
   }
+
 }

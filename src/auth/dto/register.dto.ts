@@ -1,5 +1,4 @@
-import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
-import { UserType } from 'src/roles/enum/roles.enum';
+import { IsEmail, IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator';
 import { VerifiedStatus, ActivationStatus } from 'src/users/enum/activation-status.enum';
 
 export class RegisterDto {
@@ -9,7 +8,7 @@ export class RegisterDto {
   @IsString() firstName: string;
   @IsString() lastName: string;
   @IsString() address: string;
-  
+
   rolesId: string;
 
   @IsEnum(VerifiedStatus)
@@ -17,4 +16,8 @@ export class RegisterDto {
 
   @IsEnum(ActivationStatus)
   activationStatus: ActivationStatus;
+
+  @IsOptional()
+  @IsMongoId()
+  branch?: string;
 }

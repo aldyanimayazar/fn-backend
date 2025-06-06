@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { MediaModule } from './media/media.module';
 import { RaceEventModule } from './race-event/race-event.module';
 import { RaceRegistrationModule } from './race-registration/race-registration.module';
+import { BranchModule } from './branch/branch.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RaceRegistrationModule } from './race-registration/race-registration.mo
     MediaModule,
     RaceEventModule,
     RaceRegistrationModule,
+    BranchModule,
   ],
   controllers: [],
   providers: [],

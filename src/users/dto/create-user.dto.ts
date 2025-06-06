@@ -1,36 +1,40 @@
-import { IsEmail, IsEnum, IsPhoneNumber, IsString } from "class-validator";
+import { IsEmail, IsEnum, IsMongoId, IsOptional, IsPhoneNumber, IsString } from "class-validator";
 import { UserType } from "src/roles/enum/roles.enum";
 import { IRoles } from "src/roles/interface/roles.interface";
 import { ActivationStatus, VerifiedStatus } from "../enum/activation-status.enum";
 
 export class CreateUserDto {
     @IsString()
-    userId:string;
+    userId: string;
 
     @IsEmail()
-    email:string;
+    email: string;
 
     @IsString()
-    password:string;
+    password: string;
 
     @IsString()
-    phoneNumber:string;
+    phoneNumber: string;
 
     @IsString()
-    firstName:string;
+    firstName: string;
 
     @IsString()
-    lastName:string;
+    lastName: string;
 
     @IsString()
-    address:string;
+    address: string;
 
     @IsString()
-    rolesId:IRoles;
+    rolesId: IRoles;
 
-    @IsEnum({type: ActivationStatus})
-    activationStatus:ActivationStatus;
+    @IsEnum(ActivationStatus)
+    activationStatus: ActivationStatus;
 
-    @IsEnum({type: VerifiedStatus})
-    verifiedStatus:VerifiedStatus;
+    @IsEnum(VerifiedStatus)
+    verifiedStatus: VerifiedStatus;
+
+    @IsOptional()
+    @IsMongoId()
+    branch?: string;
 }

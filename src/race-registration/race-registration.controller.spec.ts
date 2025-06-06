@@ -1,25 +1,20 @@
-// ================= Controller =================
-
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { RaceRegistrationController } from './race-registration.controller';
 import { RaceRegistrationService } from './race-registration.service';
-import { CreateRaceRegistrationDto } from './dto/create-race-registration.dto';
 
-@Controller('race-registrations')
-export class RaceRegistrationController {
-  constructor(private readonly registrationService: RaceRegistrationService) {}
+describe('RaceRegistrationController', () => {
+  let controller: RaceRegistrationController;
 
-  @Post()
-  create(@Body() dto: CreateRaceRegistrationDto) {
-    return this.registrationService.create(dto);
-  }
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [RaceRegistrationController],
+      providers: [RaceRegistrationService],
+    }).compile();
 
-  @Get()
-  findAll() {
-    return this.registrationService.findAll();
-  }
+    controller = module.get<RaceRegistrationController>(RaceRegistrationController);
+  });
 
-  @Get('race/:raceEventId')
-  findByRace(@Param('raceEventId') raceEventId: string) {
-    return this.registrationService.findByRace(raceEventId);
-  }
-}
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});

@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('media')
 export class MediaController {
-  constructor(private readonly mediaService: MediaService) {}
+  constructor(private readonly mediaService: MediaService) { }
 
   @Post()
-  create(@Body() createMediaDto: CreateMediaDto) {
-    return this.mediaService.create(createMediaDto);
+  @UseInterceptors(FileInterceptor('file')) // 'file' must match form-data key
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createMediaDto: CreateMediaDto,
+  ) {
+    return this.mediaService.create(file, createMediaDto);
   }
 
   @Get()
@@ -19,16 +24,16 @@ export class MediaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.mediaService.findOne(+id);
+    return this.mediaService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMediaDto: UpdateMediaDto) {
-    return this.mediaService.update(+id, updateMediaDto);
+    return this.mediaService.update(id, updateMediaDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.mediaService.remove(+id);
+    return this.mediaService.remove(id);
   }
 }

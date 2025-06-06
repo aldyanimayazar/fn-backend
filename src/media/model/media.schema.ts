@@ -30,4 +30,4 @@ export class MediaDocuments extends AbstractDocument {
     isDeleted: boolean;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(MediaDocuments);
+export const MediaSchema = SchemaFactory.createForClass(MediaDocuments);
